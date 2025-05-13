@@ -5,55 +5,155 @@
   <title>多言語翻訳サービス</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+      line-height: 1.6;
     }
+
+    header {
+      background: #0078d7;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+
     textarea {
-      width: 100%;
-      height: 100px;
-      margin-bottom: 20px;
+      width: calc(100% - 40px); /* Add spacing from screen edges */
+      height: 120px;
+      margin: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
     }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    #languageButtons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 5px; /* Reduce gap between buttons */
+      margin: 20px;
+    }
+
+    #languageButtons button {
+      background: #fff; /* Default white color */
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 15px; /* Adjust padding for better appearance */
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 2em; /* Increase font size for flags */
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #languageButtons button.selected {
+      background: #0078d7; /* Blue when selected */
+      color: #fff;
+    }
+
+    #languageButtons button:hover {
+      background: #005bb5; /* Darker blue on hover */
+      color: #fff;
+    }
+
     button {
+      background: #0078d7;
+      color: #fff;
+      border: none;
       padding: 10px 20px;
-      margin-bottom: 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+      margin: 20px;
     }
+
+    button:hover {
+      background: #005bb5;
+    }
+
+    #translations {
+      margin-top: 20px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
     #translations p {
       margin: 10px 0;
+      font-size: 1.1em;
+    }
+
+    #detectedLanguage {
+      margin: 20px;
+      padding: 10px;
+      background-color: #e0e0e0; /* Gray background */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1.2em;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>多言語翻訳サービス / Multi-Language Translation Service</h1>
-  <textarea id="inputText" placeholder="翻訳するテキストを入力してください / Enter text to translate" onkeypress="if(event.key === 'Enter') translateText();"></textarea>
+  <textarea id="inputText" placeholder="翻訳するテキストを入力してください。全ての言語に対応しています。 / Enter text to translate. All languages are supported." onkeypress="if(event.key === 'Enter') translateText();"></textarea>
   
   <label>翻訳先の言語を選択 / Select target languages:</label>
-  <div id="languageCheckboxes">
-    <label><input type="checkbox" value="en" checked> 🇬🇧 英語 / English</label><br>
-    <label><input type="checkbox" value="it"> 🇮🇹 イタリア語 / Italian</label><br>
-    <label><input type="checkbox" value="fr"> 🇫🇷 フランス語 / French</label><br>
-    <label><input type="checkbox" value="es"> 🇪🇸 スペイン語 / Spanish</label><br>
-    <label><input type="checkbox" value="de"> 🇩🇪 ドイツ語 / German</label><br>
-    <label><input type="checkbox" value="ro"> 🇷🇴 ルーマニア語 / Romanian</label><br>
-    <label><input type="checkbox" value="zh"> 🇨🇳 中国語 / Chinese</label><br>
-    <label><input type="checkbox" value="ko"> 🇰🇷 韓国語 / Korean</label><br>
-    <label><input type="checkbox" value="ru"> 🇷🇺 ロシア語 / Russian</label><br>
-    <label><input type="checkbox" value="pt"> 🇵🇹 ポルトガル語 / Portuguese</label><br>
-    <label><input type="checkbox" value="ar"> 🇸🇦 アラビア語 / Arabic</label><br>
-    <label><input type="checkbox" value="ja"> 🇯🇵 日本語 / Japanese</label><br>
+  <div id="languageButtons">
+    <button onclick="toggleLanguage(this, 'en')">🇬🇧</button>
+    <button onclick="toggleLanguage(this, 'it')">🇮🇹</button>
+    <button onclick="toggleLanguage(this, 'fr')">🇫🇷</button>
+    <button onclick="toggleLanguage(this, 'es')">🇪🇸</button>
+    <button onclick="toggleLanguage(this, 'de')">🇩🇪</button>
+    <button onclick="toggleLanguage(this, 'ro')">🇷🇴</button>
+    <button onclick="toggleLanguage(this, 'zh')">🇨🇳</button>
+    <button onclick="toggleLanguage(this, 'ko')">🇰🇷</button>
+    <button onclick="toggleLanguage(this, 'ru')">🇷🇺</button>
+    <button onclick="toggleLanguage(this, 'pt')">🇵🇹</button>
+    <button onclick="toggleLanguage(this, 'ar')">🇸🇦</button>
+    <button onclick="toggleLanguage(this, 'ja')">🇯🇵</button>
   </div>
   <br>
   <button onclick="translateText()">翻訳 / Translate</button>
   
+  <div id="detectedLanguage" style="display: none;">Detected Language: </div>
   <div id="translations"></div>
   
   <script>
+    const selectedLanguages = new Set();
+
+    function toggleLanguage(button, lang) {
+      if (selectedLanguages.has(lang)) {
+        selectedLanguages.delete(lang);
+        button.classList.remove('selected');
+      } else {
+        selectedLanguages.add(lang);
+        button.classList.add('selected');
+      }
+    }
+
     function translateText() {
       const text = document.getElementById('inputText').value;
-      const checkboxes = document.querySelectorAll('#languageCheckboxes input[type=checkbox]:checked');
-      const targetLanguages = Array.from(checkboxes).map(checkbox => checkbox.value);
+      const targetLanguages = Array.from(selectedLanguages);
 
       if (!text) {
-        alert('翻訳するテキストを入力してください。 全ての言語に対応しています。/Please enter text to translate. All languages are supported.');
+        alert('翻訳するテキストを入力してください。/Please enter text to translate.');
         return;
       }
 
@@ -70,7 +170,12 @@
       .then(response => response.json())
       .then(data => {
         const translationsDiv = document.getElementById('translations');
+        const detectedLanguageDiv = document.getElementById('detectedLanguage');
+
         translationsDiv.innerHTML = '';
+        detectedLanguageDiv.style.display = 'block';
+        detectedLanguageDiv.textContent = `Detected Language: ${data.source_language}`;
+
         const languageNames = {
           en: '🇬🇧 English',
           it: '🇮🇹 Italian',
@@ -86,11 +191,12 @@
           ja: '🇯🇵 Japanese'
         };
         for (const [lang, translation] of Object.entries(data)) {
+          if (lang === 'source_language') continue;
+
           const p = document.createElement('p');
           p.textContent = `${languageNames[lang]}: ${translation}`;
           translationsDiv.appendChild(p);
 
-          // 音声再生ボタン
           const playButton = document.createElement('button');
           playButton.textContent = '再生 / Play';
           playButton.onclick = () => {
