@@ -12,12 +12,12 @@ This can translate every language into Mostly-Used language.
 
 ## How to use (only for debuging or localy use) 
 1. run command below to setup
-  ```
-  uv init
-  uv sync
-  ```
-2. run command below to launch localhost server
-  ```
-  uv run app.py
-  ```
+   ```
+   uv init
+   uv sync
+   ```
+3. run command below to launch localhost server
+   ```
+   uv run app.py
+   ```
 3. access ```http://127.0.0.1//256000```
