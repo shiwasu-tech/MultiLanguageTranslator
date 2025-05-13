@@ -5,93 +5,95 @@
   <title>多言語翻訳サービス</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
+      background-color: #f0f4fa;
       color: #333;
-      line-height: 1.6;
     }
 
     header {
-      background: #0078d7;
+      background: #2563eb;
       color: #fff;
-      padding: 20px 0;
+      padding: 30px 20px;
       text-align: center;
     }
 
     h1 {
       margin: 0;
-      font-size: 2.5em;
+      font-size: 2em;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
     }
 
     textarea {
-      width: calc(100% - 40px); /* Add spacing from screen edges */
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       height: 120px;
-      margin: 20px;
-      padding: 10px;
+      padding: 15px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 10px;
       font-size: 1em;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      resize: vertical;
     }
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin: 10px 0 5px;
-    }
-
-    #languageButtons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 5px; /* Reduce gap between buttons */
-      margin: 20px;
-    }
-
-    #languageButtons button {
-      background: #fff; /* Default white color */
-      color: #333;
-      border: 1px solid #ccc;
-      padding: 15px; /* Adjust padding for better appearance */
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 2em; /* Increase font size for flags */
-      text-align: center;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    #languageButtons button.selected {
-      background: #0078d7; /* Blue when selected */
-      color: #fff;
-    }
-
-    #languageButtons button:hover {
-      background: #005bb5; /* Darker blue on hover */
-      color: #fff;
-    }
-
-    button {
-      background: #0078d7;
+    button.primary {
+      background: #2563eb;
       color: #fff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 12px 24px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 1em;
-      transition: background 0.3s;
-      margin: 20px;
+      transition: background 0.3s ease;
+      margin: 20px auto;
+      display: block;
     }
 
-    button:hover {
-      background: #005bb5;
+    button.primary.red {
+      background: red;
+    }
+
+    button.primary:hover {
+      background: #1e40af;
+    }
+
+    .flag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .flag-button {
+      font-size: 2em;
+      padding: 10px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .flag-button.selected {
+      border-color: #2563eb;
+      background: #e0edff;
     }
 
     #translations {
-      margin-top: 20px;
-      padding: 10px;
       background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     #translations p {
@@ -99,44 +101,78 @@
       font-size: 1.1em;
     }
 
-    #detectedLanguage {
-      margin: 20px;
-      padding: 10px;
-      background-color: #e0e0e0; /* Gray background */
-      border: 1px solid #ccc;
+    .play-button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      margin-left: 10px;
       border-radius: 5px;
-      font-size: 1.2em;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    #detectedLanguage {
+      background-color: #e2e8f0;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+      text-align: center;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>多言語翻訳サービス / Multi-Language Translation Service</h1>
-  <textarea id="inputText" placeholder="翻訳するテキストを入力してください。全ての言語に対応しています。 / Enter text to translate. All languages are supported." onkeypress="if(event.key === 'Enter') translateText();"></textarea>
-  
-  <label>翻訳先の言語を選択 / Select target languages:</label>
-  <div id="languageButtons">
-    <button onclick="toggleLanguage(this, 'en')">🇬🇧</button>
-    <button onclick="toggleLanguage(this, 'it')">🇮🇹</button>
-    <button onclick="toggleLanguage(this, 'fr')">🇫🇷</button>
-    <button onclick="toggleLanguage(this, 'es')">🇪🇸</button>
-    <button onclick="toggleLanguage(this, 'de')">🇩🇪</button>
-    <button onclick="toggleLanguage(this, 'ro')">🇷🇴</button>
-    <button onclick="toggleLanguage(this, 'zh')">🇨🇳</button>
-    <button onclick="toggleLanguage(this, 'ko')">🇰🇷</button>
-    <button onclick="toggleLanguage(this, 'ru')">🇷🇺</button>
-    <button onclick="toggleLanguage(this, 'pt')">🇵🇹</button>
-    <button onclick="toggleLanguage(this, 'ar')">🇸🇦</button>
-    <button onclick="toggleLanguage(this, 'ja')">🇯🇵</button>
+  <header>
+    <h1>多言語翻訳サービス / Multi-Language Translation Service</h1>
+  </header>
+  <div class="container">
+    <div class="speech-recognition">
+      <button class="primary red" onclick="toggleSpeechRecognition()">音声認識を表示 / Toggle Speech Recognition</button>
+      <div id="speechRecognitionSection" style="display: none;">
+        <p style="text-align: center; font-weight: bold;">Tap your language and start speaking</p>
+        <div class="flag-grid">
+          <button class="flag-button" onclick="startSpeechRecognition('en-US')">🇬🇧</button>
+          <button class="flag-button" onclick="startSpeechRecognition('ja-JP')">🇯🇵</button>
+          <button class="flag-button" onclick="startSpeechRecognition('it-IT')">🇮🇹</button>
+          <button class="flag-button" onclick="startSpeechRecognition('fr-FR')">🇫🇷</button>
+          <button class="flag-button" onclick="startSpeechRecognition('es-ES')">🇪🇸</button>
+          <button class="flag-button" onclick="startSpeechRecognition('de-DE')">🇩🇪</button>
+          <button class="flag-button" onclick="startSpeechRecognition('ro-RO')">🇷🇴</button>
+          <button class="flag-button" onclick="startSpeechRecognition('zh-CN')">🇨🇳</button>
+          <button class="flag-button" onclick="startSpeechRecognition('ko-KR')">🇰🇷</button>
+          <button class="flag-button" onclick="startSpeechRecognition('ru-RU')">🇷🇺</button>
+          <button class="flag-button" onclick="startSpeechRecognition('pt-PT')">🇵🇹</button>
+          <button class="flag-button" onclick="startSpeechRecognition('ar-SA')">🇸🇦</button>
+        </div>
+      </div>
+    </div>
+
+    <textarea id="inputText" placeholder="音声で話すか、テキストを入力してください。"></textarea>
+
+    <div class="flag-grid" id="languageButtons">
+      <button class="flag-button" onclick="toggleLanguage(this, 'en')">🇬🇧</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'ja')">🇯🇵</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'it')">🇮🇹</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'fr')">🇫🇷</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'es')">🇪🇸</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'de')">🇩🇪</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'ro')">🇷🇴</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'zh')">🇨🇳</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'ko')">🇰🇷</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'ru')">🇷🇺</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'pt')">🇵🇹</button>
+      <button class="flag-button" onclick="toggleLanguage(this, 'ar')">🇸🇦</button>
+    </div>
+
+    <button class="primary" onclick="translateText()">翻訳 / Translate</button>
+
+    <div id="detectedLanguage" style="display: none;">Detected Language: </div>
+    <div id="translations"></div>
   </div>
-  <br>
-  <button onclick="translateText()">翻訳 / Translate</button>
-  
-  <div id="detectedLanguage" style="display: none;">Detected Language: </div>
-  <div id="translations"></div>
-  
+
   <script>
-    const selectedLanguages = new Set();
+    const selectedLanguages = new Set(['en', 'ja']); // Default selected languages
 
     function toggleLanguage(button, lang) {
       if (selectedLanguages.has(lang)) {
@@ -153,12 +189,11 @@
       const targetLanguages = Array.from(selectedLanguages);
 
       if (!text) {
-        alert('翻訳するテキストを入力してください。/Please enter text to translate.');
+        alert('テキストを入力してください。');
         return;
       }
-
       if (targetLanguages.length === 0) {
-        alert('少なくとも1つの翻訳先言語を選択してください。/ Please select at least one target language.');
+        alert('翻訳先の言語を選択してください。');
         return;
       }
 
@@ -171,47 +206,153 @@
       .then(data => {
         const translationsDiv = document.getElementById('translations');
         const detectedLanguageDiv = document.getElementById('detectedLanguage');
-
         translationsDiv.innerHTML = '';
         detectedLanguageDiv.style.display = 'block';
         detectedLanguageDiv.textContent = `Detected Language: ${data.source_language}`;
 
-        const languageNames = {
-          en: '🇬🇧 English',
-          it: '🇮🇹 Italian',
-          fr: '🇫🇷 French',
-          es: '🇪🇸 Spanish',
-          de: '🇩🇪 German',
-          ro: '🇷🇴 Romanian',
-          zh: '🇨🇳 Chinese',
-          ko: '🇰🇷 Korean',
-          ru: '🇷🇺 Russian',
-          pt: '🇵🇹 Portuguese',
-          ar: '🇸🇦 Arabic',
-          ja: '🇯🇵 Japanese'
-        };
-        for (const [lang, translation] of Object.entries(data)) {
-          if (lang === 'source_language') continue;
+        function getLanguageName(lang) {
+          const languageNames = {
+            'en': 'English',
+            'ja': 'Japanese',
+            'it': 'Italian',
+            'fr': 'French',
+            'es': 'Spanish',
+            'de': 'German',
+            'zh': 'Chinese',
+            'ko': 'Korean',
+            'ru': 'Russian',
+            'pt': 'Portuguese',
+            'ar': 'Arabic',
+            'ro': 'Romanian'
+          };
+          return languageNames[lang] || 'Unknown';
+        }
 
+        const uiLanguageOrder = ['en', 'ja', 'it', 'fr', 'es', 'de', 'ro', 'zh', 'ko', 'ru', 'pt', 'ar'];
+
+        for (const lang of uiLanguageOrder) {
+          if (!data[lang] || lang === 'source_language') continue;
+
+          const translation = data[lang];
           const p = document.createElement('p');
-          p.textContent = `${languageNames[lang]}: ${translation}`;
-          translationsDiv.appendChild(p);
+          p.style.display = 'flex';
+          p.style.alignItems = 'center';
+          p.style.gap = '10px';
+          p.style.justifyContent = 'space-between';
+          p.style.width = '100%';
+
+          const langText = document.createElement('span');
+          langText.textContent = getLanguageName(lang);
+          langText.style.flexBasis = '20%'; // Increased space for language name
+
+          const flag = document.createElement('span');
+          flag.textContent = getFlagEmoji(lang);
+          flag.style.flexBasis = '5%'; // Reduced space for flag
+          flag.style.textAlign = 'center';
+          flag.style.fontSize = '1.5em';
 
           const playButton = document.createElement('button');
-          playButton.textContent = '再生 / Play';
+          playButton.className = 'play-button';
+          playButton.textContent = 'Play';
+          playButton.style.flexBasis = '10%';
+          playButton.style.textAlign = 'center';
           playButton.onclick = () => {
             const utterance = new SpeechSynthesisUtterance(translation);
             utterance.lang = lang;
             speechSynthesis.speak(utterance);
           };
-          translationsDiv.appendChild(playButton);
+
+          const translationText = document.createElement('span');
+          translationText.textContent = translation;
+          translationText.style.flexBasis = '65%';
+          translationText.style.textAlign = 'left';
+
+          p.appendChild(langText);
+          p.appendChild(flag);
+          p.appendChild(playButton);
+          p.appendChild(translationText);
+          translationsDiv.appendChild(p);
+        }
+
+        function getFlagEmoji(lang) {
+          const flags = {
+            'en': '🇬🇧',
+            'ja': '🇯🇵',
+            'it': '🇮🇹',
+            'fr': '🇫🇷',
+            'es': '🇪🇸',
+            'de': '🇩🇪',
+            'zh': '🇨🇳',
+            'ko': '🇰🇷',
+            'ru': '🇷🇺',
+            'pt': '🇵🇹',
+            'ar': '🇸🇦',
+            'ro': '🇷🇴'
+          };
+          return flags[lang] || '🏳';
         }
       })
       .catch(error => {
-        console.error('エラーが発生しました:', error);
-        alert('翻訳中にエラーが発生しました。');
+        console.error('エラー:', error);
+        alert('翻訳に失敗しました。');
       });
     }
+
+    function toggleSpeechRecognition() {
+      const section = document.getElementById('speechRecognitionSection');
+      section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function startSpeechRecognition(lang) {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('このブラウザは音声認識をサポートしていません。');
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = lang;
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        console.log(`音声認識を開始しました: ${lang}`);
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('inputText').value = transcript;
+        translateText(); // Automatically trigger translation after speech recognition
+      };
+
+      recognition.onerror = (event) => {
+        console.error('音声認識エラー:', event.error);
+        alert('音声認識中にエラーが発生しました。');
+      };
+
+      recognition.onend = () => {
+        console.log('音声認識を終了しました。');
+      };
+
+      recognition.start();
+    }
+
+    document.getElementById('inputText').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.isComposing) {
+        event.preventDefault(); // Prevent default behavior of Enter key
+        translateText(); // Trigger translation on Enter key press
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set default selected languages (English and Japanese) to blue
+      const defaultLanguages = ['en', 'ja'];
+      defaultLanguages.forEach(lang => {
+        const button = document.querySelector(`.flag-button[onclick*="'${lang}'"]`);
+        if (button) {
+          button.classList.add('selected');
+        }
+      });
+    });
   </script>
 </body>
 </html>
