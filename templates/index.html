@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>多言語翻訳サービス</title>
+  <title>多言語同時翻訳</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -124,13 +124,13 @@
 </head>
 <body>
   <header>
-    <h1>多言語翻訳サービス / Multi-Language Translation Service</h1>
+    <h1>多言語同時翻訳 / Multi-Language Translation</h1>
   </header>
   <div class="container">
     <div class="speech-recognition">
       <button class="primary red" onclick="toggleSpeechRecognition()">音声認識を表示 / Toggle Speech Recognition</button>
       <div id="speechRecognitionSection" style="display: none;">
-        <p style="text-align: center; font-weight: bold;">Tap your language and start speaking</p>
+        <p style="text-align: center; font-weight: bold;">言語をタップして発話を開始 / Tap your language and start speaking</p>
         <div class="flag-grid">
           <button class="flag-button" onclick="startSpeechRecognition('en-US')">🇬🇧</button>
           <button class="flag-button" onclick="startSpeechRecognition('ja-JP')">🇯🇵</button>
@@ -148,7 +148,7 @@
       </div>
     </div>
 
-    <textarea id="inputText" placeholder="音声で話すか、テキストを入力してください。"></textarea>
+    <textarea id="inputText" placeholder="音声で話すか、テキストを入力してください。/ No sentence to translate"></textarea>
 
     <div class="flag-grid" id="languageButtons">
       <button class="flag-button" onclick="toggleLanguage(this, 'en')">🇬🇧</button>
@@ -193,7 +193,7 @@
         return;
       }
       if (targetLanguages.length === 0) {
-        alert('翻訳先の言語を選択してください。');
+        alert('翻訳先の言語を選択してください。/ Select at least one target language.');
         return;
       }
 
@@ -294,7 +294,7 @@
       })
       .catch(error => {
         console.error('エラー:', error);
-        alert('翻訳に失敗しました。');
+        alert('翻訳に失敗しました。/ Translation failed.');
       });
     }
 
@@ -305,7 +305,7 @@
 
     function startSpeechRecognition(lang) {
       if (!('webkitSpeechRecognition' in window)) {
-        alert('このブラウザは音声認識をサポートしていません。');
+        alert('このブラウザは音声認識をサポートしていません。 / This browser does not support speech recognition.');
         return;
       }
 
@@ -315,7 +315,7 @@
       recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
-        console.log(`音声認識を開始しました: ${lang}`);
+        console.log(`音声認識を開始しました / Begin Speech Recognition: ${lang}`);
       };
 
       recognition.onresult = (event) => {
@@ -326,11 +326,11 @@
 
       recognition.onerror = (event) => {
         console.error('音声認識エラー:', event.error);
-        alert('音声認識中にエラーが発生しました。');
+        alert('音声認識中にエラーが発生しました。 / An error occurred during speech recognition.');
       };
 
       recognition.onend = () => {
-        console.log('音声認識を終了しました。');
+        console.log('音声認識を終了しました。 / Speech Recognition ended.');
       };
 
       recognition.start();
