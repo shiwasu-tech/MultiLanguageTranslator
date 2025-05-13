@@ -7,7 +7,7 @@
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 0 20px; /* Add left and right padding for consistent spacing */
       background-color: #f4f4f9;
       color: #333;
       line-height: 1.6;
@@ -16,19 +16,20 @@
     header {
       background: #0078d7;
       color: #fff;
-      padding: 20px 0;
+      padding: 20px 20px; /* Add left and right padding */
       text-align: center;
     }
 
     h1 {
       margin: 0;
       font-size: 2.5em;
+      padding-left: 20px; /* Add left padding */
     }
 
     textarea {
       width: calc(100% - 40px); /* Add spacing from screen edges */
       height: 120px;
-      margin: 20px;
+      margin: 20px; /* Add equal margin on all sides */
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -39,9 +40,10 @@
       font-weight: bold;
       display: block;
       margin: 10px 0 5px;
+      padding-left: 20px; /* Add left padding */
     }
 
-    #languageButtons {
+    #languageButtons, #speechLanguageButtons {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 5px; /* Reduce gap between buttons */
@@ -71,7 +73,7 @@
     }
 
     button {
-      background: #0078d7;
+      background: #ff0000; /* Red color for toggle button */
       color: #fff;
       border: none;
       padding: 10px 20px;
@@ -83,7 +85,45 @@
     }
 
     button:hover {
-      background: #005bb5;
+      background: #cc0000; /* Darker red on hover */
+    }
+
+    #speechLanguageButtons button {
+      background: #ffcccc; /* Light red background */
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 2em;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #speechLanguageButtons button.selected {
+      background: #0078d7; /* Blue when selected */
+      color: #fff;
+    }
+
+    #speechLanguageButtons button:hover {
+      background: #ff9999; /* Slightly darker red on hover */
+      color: #fff;
+    }
+
+    #translateButton {
+      background: #0078d7; /* Blue color for translate button */
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+      margin: 20px;
+    }
+
+    #translateButton:hover {
+      background: #005bb5; /* Darker blue on hover */
     }
 
     #translations {
@@ -109,36 +149,46 @@
       font-weight: bold;
     }
 
+    /* Remove microphone button styles */
     #microphoneButton {
-      background: #0078d7;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 5px; /* Change to small square */
-      cursor: pointer;
-      font-size: 1.2em; /* Adjust font size */
-      transition: background 0.3s;
-      margin: 10px;
-      width: 40px; /* Set fixed width */
-      height: 40px; /* Set fixed height */
+      display: none;
     }
 
-    #microphoneButton:hover {
-      background: #005bb5;
+    #speechRecognitionSection {
+      display: none; /* Initially hidden */
+      margin: 20px 20px 20px 20px; /* Add equal spacing from all edges */
     }
   </style>
 </head>
 <body>
   <h1>多言語翻訳サービス / Multi-Language Translation Service</h1>
-  <textarea id="inputText" placeholder="翻訳するテキストを入力してください。全ての言語に対応しています。 / Enter text to translate. All languages are supported." onkeypress="if(event.key === 'Enter') translateText();"></textarea>
-  
-  <div>
-    <button id="microphoneButton" onclick="startSpeechRecognition()">🔴</button>
+
+  <button onclick="toggleSpeechRecognition()">音声認識を表示 / Toggle Speech Recognition</button>
+  <div id="speechRecognitionSection">
+    <label>音声認識の言語を選択 / Select Speech Recognition Language:</label>
+    <p style="text-align: center; font-weight: bold;">Tap your language and start speaking</p>
+    <div id="speechLanguageButtons">
+      <button onclick="startSpeechRecognition('en-US')">🇬🇧</button>
+      <button onclick="startSpeechRecognition('ja-JP')">🇯🇵</button>
+      <button onclick="startSpeechRecognition('it-IT')">🇮🇹</button>
+      <button onclick="startSpeechRecognition('fr-FR')">🇫🇷</button>
+      <button onclick="startSpeechRecognition('es-ES')">🇪🇸</button>
+      <button onclick="startSpeechRecognition('de-DE')">🇩🇪</button>
+      <button onclick="startSpeechRecognition('ro-RO')">🇷🇴</button>
+      <button onclick="startSpeechRecognition('zh-CN')">🇨🇳</button>
+      <button onclick="startSpeechRecognition('ko-KR')">🇰🇷</button>
+      <button onclick="startSpeechRecognition('ru-RU')">🇷🇺</button>
+      <button onclick="startSpeechRecognition('pt-PT')">🇵🇹</button>
+      <button onclick="startSpeechRecognition('ar-SA')">🇸🇦</button>
+    </div>
   </div>
 
+  <textarea id="inputText" placeholder="音声で話すか、テキストを入力してください。テキスト入力はすべての言語に対応しています。 / Speak or type the text to be translated. Text input supports all languages." onkeypress="if(event.key === 'Enter') translateText();"></textarea>
+  
   <label>翻訳先の言語を選択 / Select target languages:</label>
   <div id="languageButtons">
     <button onclick="toggleLanguage(this, 'en')">🇬🇧</button>
+    <button onclick="toggleLanguage(this, 'ja')">🇯🇵</button>
     <button onclick="toggleLanguage(this, 'it')">🇮🇹</button>
     <button onclick="toggleLanguage(this, 'fr')">🇫🇷</button>
     <button onclick="toggleLanguage(this, 'es')">🇪🇸</button>
@@ -149,16 +199,15 @@
     <button onclick="toggleLanguage(this, 'ru')">🇷🇺</button>
     <button onclick="toggleLanguage(this, 'pt')">🇵🇹</button>
     <button onclick="toggleLanguage(this, 'ar')">🇸🇦</button>
-    <button onclick="toggleLanguage(this, 'ja')">🇯🇵</button>
   </div>
   <br>
-  <button onclick="translateText()">翻訳 / Translate</button>
+  <button id="translateButton" onclick="translateText()">翻訳 / Translate</button>
   
   <div id="detectedLanguage" style="display: none;">Detected Language: </div>
   <div id="translations"></div>
   
   <script>
-    const selectedLanguages = new Set();
+    const selectedLanguages = new Set(['en', 'ja']); // Default selected languages: English and Japanese
 
     function toggleLanguage(button, lang) {
       if (selectedLanguages.has(lang)) {
@@ -169,6 +218,16 @@
         button.classList.add('selected');
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Automatically mark English and Japanese buttons as selected
+      document.querySelectorAll('#languageButtons button').forEach(button => {
+        const lang = button.textContent.trim();
+        if (lang === '🇬🇧' || lang === '🇯🇵') {
+          button.classList.add('selected');
+        }
+      });
+    });
 
     function translateText() {
       const text = document.getElementById('inputText').value;
@@ -200,6 +259,7 @@
 
         const languageNames = {
           en: '🇬🇧 English',
+          ja: '🇯🇵 Japanese',
           it: '🇮🇹 Italian',
           fr: '🇫🇷 French',
           es: '🇪🇸 Spanish',
@@ -209,8 +269,7 @@
           ko: '🇰🇷 Korean',
           ru: '🇷🇺 Russian',
           pt: '🇵🇹 Portuguese',
-          ar: '🇸🇦 Arabic',
-          ja: '🇯🇵 Japanese'
+          ar: '🇸🇦 Arabic'
         };
         for (const [lang, translation] of Object.entries(data)) {
           if (lang === 'source_language') continue;
@@ -221,6 +280,16 @@
 
           const playButton = document.createElement('button');
           playButton.textContent = '再生 / Play';
+          playButton.style.backgroundColor = '#0078d7'; // Blue color for play button
+          playButton.style.color = '#fff'; // White text color
+          playButton.style.border = 'none';
+          playButton.style.padding = '10px 20px';
+          playButton.style.borderRadius = '5px';
+          playButton.style.cursor = 'pointer';
+          playButton.style.fontSize = '1em';
+          playButton.style.transition = 'background 0.3s';
+          playButton.onmouseover = () => playButton.style.backgroundColor = '#005bb5'; // Darker blue on hover
+          playButton.onmouseout = () => playButton.style.backgroundColor = '#0078d7'; // Reset to blue
           playButton.onclick = () => {
             const utterance = new SpeechSynthesisUtterance(translation);
             utterance.lang = lang;
@@ -235,19 +304,19 @@
       });
     }
 
-    function startSpeechRecognition() {
+    function startSpeechRecognition(lang) {
       if (!('webkitSpeechRecognition' in window)) {
         alert('このブラウザは音声認識をサポートしていません。/ This browser does not support speech recognition.');
         return;
       }
 
       const recognition = new webkitSpeechRecognition();
-      recognition.lang = 'ja-JP'; // Set the language for recognition
+      recognition.lang = lang; // Set the language dynamically based on button click
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
       recognition.onstart = () => {
-        console.log('音声認識を開始しました。/ Speech recognition started.');
+        console.log(`音声認識を開始しました。言語: ${lang} / Speech recognition started. Language: ${lang}`);
       };
 
       recognition.onresult = (event) => {
@@ -266,6 +335,15 @@
       };
 
       recognition.start();
+    }
+
+    function toggleSpeechRecognition() {
+      const section = document.getElementById('speechRecognitionSection');
+      if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+      } else {
+        section.style.display = 'none';
+      }
     }
   </script>
 </body>
