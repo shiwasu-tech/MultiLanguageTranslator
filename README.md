@@ -21,3 +21,6 @@ This can translate every language into Mostly-Used language.
    uv run app.py
    ```
 3. access ```http://127.0.0.1//256000```
+
+## overview
+![image](https://github.com/user-attachments/assets/6fbf95db-19f3-43de-9b45-64fa653d1b1d)
