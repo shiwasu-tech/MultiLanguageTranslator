@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>多言語翻訳サービス</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-bottom: 20px;
+    }
+    #translations p {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>多言語翻訳サービス / Multi-Language Translation Service</h1>
+  <textarea id="inputText" placeholder="翻訳するテキストを入力してください / Enter text to translate" onkeypress="if(event.key === 'Enter') translateText();"></textarea>
+  
+  <label>翻訳先の言語を選択 / Select target languages:</label>
+  <div id="languageCheckboxes">
+    <label><input type="checkbox" value="en" checked> 🇬🇧 英語 / English</label><br>
+    <label><input type="checkbox" value="it"> 🇮🇹 イタリア語 / Italian</label><br>
+    <label><input type="checkbox" value="fr"> 🇫🇷 フランス語 / French</label><br>
+    <label><input type="checkbox" value="es"> 🇪🇸 スペイン語 / Spanish</label><br>
+    <label><input type="checkbox" value="de"> 🇩🇪 ドイツ語 / German</label><br>
+    <label><input type="checkbox" value="ro"> 🇷🇴 ルーマニア語 / Romanian</label><br>
+    <label><input type="checkbox" value="zh"> 🇨🇳 中国語 / Chinese</label><br>
+    <label><input type="checkbox" value="ko"> 🇰🇷 韓国語 / Korean</label><br>
+    <label><input type="checkbox" value="ru"> 🇷🇺 ロシア語 / Russian</label><br>
+    <label><input type="checkbox" value="pt"> 🇵🇹 ポルトガル語 / Portuguese</label><br>
+    <label><input type="checkbox" value="ar"> 🇸🇦 アラビア語 / Arabic</label><br>
+    <label><input type="checkbox" value="ja"> 🇯🇵 日本語 / Japanese</label><br>
+  </div>
+  <br>
+  <button onclick="translateText()">翻訳 / Translate</button>
+  
+  <div id="translations"></div>
+  
+  <script>
+    function translateText() {
+      const text = document.getElementById('inputText').value;
+      const checkboxes = document.querySelectorAll('#languageCheckboxes input[type=checkbox]:checked');
+      const targetLanguages = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+      if (!text) {
+        alert('翻訳するテキストを入力してください。 全ての言語に対応しています。/Please enter text to translate. All languages are supported.');
+        return;
+      }
+
+      if (targetLanguages.length === 0) {
+        alert('少なくとも1つの翻訳先言語を選択してください。/ Please select at least one target language.');
+        return;
+      }
+
+      fetch('/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, target_languages: targetLanguages })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const translationsDiv = document.getElementById('translations');
+        translationsDiv.innerHTML = '';
+        const languageNames = {
+          en: '🇬🇧 English',
+          it: '🇮🇹 Italian',
+          fr: '🇫🇷 French',
+          es: '🇪🇸 Spanish',
+          de: '🇩🇪 German',
+          ro: '🇷🇴 Romanian',
+          zh: '🇨🇳 Chinese',
+          ko: '🇰🇷 Korean',
+          ru: '🇷🇺 Russian',
+          pt: '🇵🇹 Portuguese',
+          ar: '🇸🇦 Arabic',
+          ja: '🇯🇵 Japanese'
+        };
+        for (const [lang, translation] of Object.entries(data)) {
+          const p = document.createElement('p');
+          p.textContent = `${languageNames[lang]}: ${translation}`;
+          translationsDiv.appendChild(p);
+
+          // 音声再生ボタン
+          const playButton = document.createElement('button');
+          playButton.textContent = '再生 / Play';
+          playButton.onclick = () => {
+            const utterance = new SpeechSynthesisUtterance(translation);
+            utterance.lang = lang;
+            speechSynthesis.speak(utterance);
+          };
+          translationsDiv.appendChild(playButton);
+        }
+      })
+      .catch(error => {
+        console.error('エラーが発生しました:', error);
+        alert('翻訳中にエラーが発生しました。');
+      });
+    }
+  </script>
+</body>
+</html>
